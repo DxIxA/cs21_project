@@ -230,7 +230,6 @@ void main_loop(std::map<Position, Seat> &Library)
 		else if(choice == "6") std::terminate();
 	}
 }
-// Function to display the admin menu
 
 int main(){
 	std::map<Position, Seat> Library;
