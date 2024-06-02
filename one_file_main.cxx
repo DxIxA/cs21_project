@@ -18,9 +18,15 @@ struct Message{
 	Message(std::string message, Seat *address) : message(message), sender(address) {}
 };
 
+struct LogEntry {
+    std::string action;
+    std::string type; 
+};
+
 std::queue<Message> messageQueue;
 std::mutex alarm_queue_mutex;
 std::ofstream logFile("library_log.txt", std::ios::app);
+std::map<std::string, std::vector<LogEntry>> logData;
 std::mutex log_file_mutex;
 
 class Rand_int {
@@ -79,15 +85,11 @@ public:
 	Position get_position() const { return position; }
 };
 
-void log_action(const std::string &action) {
-	std::scoped_lock lock{log_file_mutex};
-	logFile << action << std::endl;
+void log_action(const std::string& action, const std::string& type) {
+    logFile << action << std::endl;
+    logData[type].push_back({action, type}); 
 }
 
-void log_action(const Message &action) {
-	std::scoped_lock lock{log_file_mutex};
-	logFile << action.message << std::endl;
-}
 void main_loop(std::map<Position, Seat> &Library);
 
 void displayAdminMenu() {
@@ -241,4 +243,5 @@ int main(){
 
 	main_loop(Library);
 	logFile.close();
+	return 0;
 }
